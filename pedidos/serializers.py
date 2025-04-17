@@ -18,8 +18,19 @@ class PedidoSerializer(serializers.ModelSerializer):
     def create(self , validated_data):
         items_data = validated_data.pop('items')    
         pedido = Pedido.objects.create(**validated_data)
-        
+
         for item_data in items_data:
-            ItemPedido.objects.create(pedido=pedido, **item_data)
-            
-        return pedido    
+            # Verificar si el producto ya existe en el pedido
+            producto = item_data['producto']
+            # Si el producto ya está en el pedido, actualizamos la cantidad
+            existing_item = ItemPedido.objects.filter(pedido=pedido, producto=producto).first()
+
+            if existing_item:
+                # Si ya existe, sumamos la cantidad al item existente
+                existing_item.cantidad += item_data['cantidad']
+                existing_item.save()
+            else:
+                # Si no existe, creamos un nuevo item
+                ItemPedido.objects.create(pedido=pedido, **item_data)
+
+        return pedido
