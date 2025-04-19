@@ -1,22 +1,19 @@
 from django.shortcuts import render
-from rest_framework.permissions import AllowAny, IsAdminUser
-
+from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer
-
-from rest_framework import viewsets, permissions
+from core.viewsets import BaseViewSet
 from .models import Usuario
-from .serializers import UsuarioSerializer
+from .serializers import UsuarioSerializer,CustomTokenObtainPairSerializer
 
-class UsuarioViewSet(viewsets.ModelViewSet):
+class UsuarioViewSet(BaseViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    #permission_classes = [permissions.IsAdminUser]  # Solo el admin puede ver todos los usuarios
+    basename = 'usuarios'
 
     def get_permissions(self):
         if self.action == 'create':
             return [AllowAny()]
-        return [IsAdminUser()]
+        return super().get_permissions()
 
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-x(v=kvumnzt0+t2u8dtnw2^(fl5*^63r)d@vdgqec7(vy&k&t$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.0.5', 'localhost', '127.0.0.1','10.0.2.2']
 
 
 # Application definition
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'core',
 ]
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
@@ -149,6 +150,8 @@ SIMPLE_JWT = {
 }
 
 REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 5,  # ← Puedes ajustar el número por defecto aquí
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     )

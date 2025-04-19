@@ -4,7 +4,7 @@ from .views import LoginView, UsuarioViewSet
 from rest_framework_simplejwt.views import TokenRefreshView
 
 router = DefaultRouter()
-router.register(r'', UsuarioViewSet, basename='usuario')
+router.register(r'', UsuarioViewSet, basename='usuarios')
 
 urlpatterns = [
 
