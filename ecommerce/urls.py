@@ -25,7 +25,7 @@ urlpatterns = [
     path('api/carrito/', include('carrito.urls')),  # Rutas para la app carrito
     path('api/usuarios/', include('usuarios.urls')),
     path('api/pedidos/', include('pedidos.urls')),
-
+    path('api/asistente/', include('asistente.urls'))
 ]
 
 # Sirve archivos media (como imágenes) durante el desarrollo

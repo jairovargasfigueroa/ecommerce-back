@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'core',
+    'asistente',
 ]
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
@@ -87,9 +88,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ecommerce',  # Nombre de la base de datos en PostgreSQL
         'USER': 'postgres',  # Nombre del usuario que creaste en PostgreSQL
-        'PASSWORD': '221046194',  # Contraseña del usuario
+        'PASSWORD': 'admin',  # Contraseña del usuario
         'HOST': 'localhost',  # Usualmente localhost
-        'PORT': '5433',  # Puerto por defecto de PostgreSQL
+        'PORT': '5432',  # Puerto por defecto de PostgreSQL
     }
 
 }
