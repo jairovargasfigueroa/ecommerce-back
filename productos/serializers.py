@@ -5,3 +5,6 @@ class ProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
         fields = '__all__'  # Incluye todos los campos del modelo Producto
+        extra_kwargs = {
+            'imagen': {'required': False}
+        }

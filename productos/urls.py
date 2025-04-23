@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from .viewsets import ProductoViewSet
 
 router = DefaultRouter()
-router.register(r'', ProductoViewSet)  # deja la ruta vacía
+router.register(r'', ProductoViewSet, basename = 'productos') 
 
 
 urlpatterns = [

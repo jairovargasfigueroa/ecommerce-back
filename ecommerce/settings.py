@@ -23,10 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-x(v=kvumnzt0+t2u8dtnw2^(fl5*^63r)d@vdgqec7(vy&k&t$'
 
+# settings.py
+
+STRIPE_SECRET_KEY = 'sk_test_51RGa3uR60AvZBvnPZ0RTxQFO27fFMAlNxq8zvrg6aLA51MIKzM5UtnA5NDOHFyn5TkNTXLiXSfEZx1CevpuZUYGl00jYDduyhq'
+STRIPE_PUBLIC_KEY = 'pk_test_51RGa3uR60AvZBvnPKgJB1xPYOmSy4Ak06GkLjl7aE2o09qjZQxudy1im32X1hyfIQLRyVZ7qd5AJIOE0SuNy6Q9J00dGAHACgC'
+
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.5', 'localhost', '127.0.0.1','10.0.2.2']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,6 +48,7 @@ INSTALLED_APPS = [
     'carrito',
     'pedidos',
     'usuarios',
+    'pagos',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -93,6 +100,21 @@ DATABASES = {
     }
 
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'sql_server.pyodbc',
+#         'NAME': 'eo',  # Nombre de tu base de datos
+#         'USER': 'usuario_admin',  # Usuario de Azure
+#         'PASSWORD': 'TuContraseñaSegura123',
+#         'HOST': 'mi-servidor.database.windows.net',  # Nombre del servidor
+#         'PORT': '1433',
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#         },
+#     }
+# }
+
 
 
 
@@ -150,7 +172,7 @@ SIMPLE_JWT = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PAGINATION_CLASS': 'core.pagination.CustomPagination',
     'PAGE_SIZE': 5,  # ← Puedes ajustar el número por defecto aquí
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

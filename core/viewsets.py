@@ -15,8 +15,10 @@ class BaseViewSet(viewsets.ModelViewSet):
         return self.queryset
 
     def list(self, request, *args, **kwargs):
-        logger.info(f"[{request.user.rol}] accedió a {self.basename} (LIST)")
+        rol = getattr(request.user, 'rol', 'anon')
+        logger.info(f"[{rol}] accedió a {self.basename} (LIST)")
         return super().list(request, *args, **kwargs)
+
 
     def create(self, request, *args, **kwargs):
         rol = getattr(request.user, 'rol', 'anónimo')
