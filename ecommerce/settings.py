@@ -13,7 +13,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 
 from pathlib import Path
+import os
 
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,12 +27,13 @@ SECRET_KEY = 'django-insecure-x(v=kvumnzt0+t2u8dtnw2^(fl5*^63r)d@vdgqec7(vy&k&t$
 
 # settings.py
 
-STRIPE_SECRET_KEY = 'sk_test_51RGa3uR60AvZBvnPZ0RTxQFO27fFMAlNxq8zvrg6aLA51MIKzM5UtnA5NDOHFyn5TkNTXLiXSfEZx1CevpuZUYGl00jYDduyhq'
-STRIPE_PUBLIC_KEY = 'pk_test_51RGa3uR60AvZBvnPKgJB1xPYOmSy4Ak06GkLjl7aE2o09qjZQxudy1im32X1hyfIQLRyVZ7qd5AJIOE0SuNy6Q9J00dGAHACgC'
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -66,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -75,7 +79,8 @@ ROOT_URLCONF = 'ecommerce.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # 'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,32 +94,41 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecommerce',  # Nombre de la base de datos en PostgreSQL
-        'USER': 'postgres',  # Nombre del usuario que creaste en PostgreSQL
-        'PASSWORD': '221046194',  # Contraseña del usuario
-        'HOST': 'localhost',  # Usualmente localhost
-        'PORT': '5433',  # Puerto por defecto de PostgreSQL
-    }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ecommerce',  # Nombre de la base de datos en PostgreSQL
+#         'USER': 'postgres',  # Nombre del usuario que creaste en PostgreSQL
+#         'PASSWORD': '221046194',  # Contraseña del usuario
+#         'HOST': 'localhost',  # Usualmente localhost
+#         'PORT': '5433',  # Puerto por defecto de PostgreSQL
+#     }
 
-}
+# }
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'sql_server.pyodbc',
-#         'NAME': 'eo',  # Nombre de tu base de datos
-#         'USER': 'usuario_admin',  # Usuario de Azure
-#         'PASSWORD': 'TuContraseñaSegura123',
-#         'HOST': 'mi-servidor.database.windows.net',  # Nombre del servidor
-#         'PORT': '1433',
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#         },
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ecommerce',  # Nombre de tu base de datos
+#         'USER': 'postgres',  # Usuario de Azure
+#         'PASSWORD': 'Abc123**',
+#         'HOST': 'ecommerce-postgres.postgres.database.azure.com',  # Nombre del servidor
+#         'PORT': '5432',
+        
 #     }
 # }
 
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5432'),
+    }
+}
 
 
 
@@ -154,6 +168,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'frontend'),   # Aquí está el build de Angular
+    os.path.join(BASE_DIR, 'media'),   # Imagenes de la app
+]
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

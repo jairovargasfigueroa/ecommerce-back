@@ -1,0 +1,82 @@
+# Entorno virtual
+env/
+venv/
+ENV/
+.venv/
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Configuración de PyCharm, VSCode, etc.
+.idea/
+.vscode/
+
+# Archivos de bases de datos locales
+*.sqlite3
+db.sqlite3
+
+# Archivos de migraciones compilados
+**/migrations/*.pyc
+**/migrations/__pycache__/
+
+# Configuración de entorno
+*.env
+.env
+.env.*
+
+# Archivos estáticos generados
+/staticfiles/
+/media/
+
+
+# Archivos de compilación de Angular (si es parte del proyecto)
+frontend
+templates
+
+# Logs
+*.log
+
+# Archivos de seguridad
+secret_key.txt
+
+# Configuración de OS
+.DS_Store
+Thumbs.db
+
+# Compilaciones
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+
+# Archivos de pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+.pyre/
+
+# Gunicorn PID
+gunicorn.pid
