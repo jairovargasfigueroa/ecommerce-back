@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'carrito',
     'pedidos',
     'usuarios',
+    'pagos',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
