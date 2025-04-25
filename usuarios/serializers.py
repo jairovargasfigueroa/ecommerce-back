@@ -7,7 +7,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
         model = Usuario
         fields = ['id', 'username', 'email', 'password', 'rol']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True},
+            'rol': {'required': False}
         }
 
     def create(self, validated_data):
@@ -27,12 +28,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
+        token['user_id'] = user.id
         token['username'] = user.username
         token['rol'] = user.rol
+
         return token
 
     def validate(self, attrs):
         data = super().validate(attrs)
+        data['user_id'] = self.user.id
         data['username'] = self.user.username
         data['rol'] = self.user.rol
         return data

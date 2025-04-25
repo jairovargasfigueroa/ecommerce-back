@@ -5,6 +5,17 @@ from usuarios.models import Usuario
 
 
 class Pedido(models.Model):
+    TIPOS_PAGO = [
+        ('tarjeta', 'Tarjeta'),
+        ('qr', 'QR'),
+        ('efectivo', 'Efectivo')
+    ]
+
+    TIPOS_ENTREGA = [
+        ('delivery', 'Delivery'),
+        ('tienda', 'Recoger en tienda')
+    ]
+
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE ,related_name='pedidos')
     monto_total = models.DecimalField(max_digits=10,decimal_places=2)
     estado = models.CharField(max_length=50, choices=[
@@ -12,6 +23,8 @@ class Pedido(models.Model):
         ('completado', 'Completado'),
         ('cancelado', 'Cancelado')
     ])
+    tipo_pago = models.CharField(max_length=10, choices=TIPOS_PAGO,default='efectivo')
+    tipo_entrega = models.CharField(max_length=10, choices=TIPOS_ENTREGA,default='tienda')
     fecha_pedido = models.DateTimeField(auto_now_add=True)
     
     
