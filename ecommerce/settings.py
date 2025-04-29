@@ -181,13 +181,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'frontend'),   # Aquí está el build de Angular
+    
+# ]
+
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Archivos estáticos (Angular compilado + Django static)
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend'),   # Aquí está el build de Angular
+    os.path.join(BASE_DIR, 'frontend'),  # Aquí está tu build de Angular (index.html, js, css)
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Aquí se copiarán los archivos con collectstatic
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
