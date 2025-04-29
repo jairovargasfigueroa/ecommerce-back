@@ -9,13 +9,18 @@ class PedidoViewSet(BaseViewSet):
     queryset = Pedido.objects.all().order_by('-fecha_pedido')  # 👈 más reciente primero
     serializer_class = PedidoSerializer
     basename = 'pedidos'
-    pagination_class = CustomPagination
-    filter_by_user = True  # Para que el cliente solo vea sus propios pedidos
+    pagination_class = CustomPagination 
     
 
     def perform_create(self, serializer):
         # Asociar automáticamente el usuario autenticado
         serializer.save(usuario=self.request.user)
+
+    def get_queryset(self):
+        # Filtrar por usuario si no es admin
+        if self.filter_by_user:
+            return self.queryset.filter(usuario=self.request.user)
+        return self.queryset
 
     @action(detail=False, methods=['get'], url_path='pendiente-actual')
     def pedido_pendiente_actual(self, request):

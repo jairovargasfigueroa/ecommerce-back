@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from core.permissions import PermisoPorRol
 
 class ProductoViewSet(BaseViewSet):
-    queryset = Producto.objects.all()  # Obtiene todos los productos
+    queryset = Producto.objects.all().order_by('-fecha_creacion')  # Obtiene todos los productos
     serializer_class = ProductoSerializer  # Utiliza el serializador definido
     basename = 'productos'
     

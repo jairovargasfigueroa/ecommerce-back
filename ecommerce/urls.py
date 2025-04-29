@@ -27,7 +27,11 @@ urlpatterns = [
     path('api/usuarios/', include('usuarios.urls')),
     path('api/pedidos/', include('pedidos.urls')),
     path('api/pagos/', include('pagos.urls')),
-     re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
+    path('', include('recomendaciones.urls')),
+    path('api/notificaciones/', include('notificaciones.urls')),
+
+    # path('api/recomendaciones/', include('recomendaciones.urls')),
+    re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
 
 ]
 

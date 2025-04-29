@@ -6,7 +6,7 @@ from .models import Usuario
 from .serializers import UsuarioSerializer,CustomTokenObtainPairSerializer
 
 class UsuarioViewSet(BaseViewSet):
-    queryset = Usuario.objects.all()
+    queryset = Usuario.objects.all().order_by('-date_joined')
     serializer_class = UsuarioSerializer
     basename = 'usuarios'
 

@@ -1,18 +1,24 @@
 from rest_framework import serializers
+from notificaciones.models import Notificacion
 from productos.models import Producto
 from .models import ItemPedido, Pedido
 
 
 class ItemPedidoSerializer(serializers.ModelSerializer):
+    producto_nombre = serializers.SerializerMethodField()
     class Meta:
         model = ItemPedido
-        fields = ['id', 'pedido', 'producto', 'cantidad', 'precio_unitario']
+        fields = ['id', 'pedido', 'producto', 'producto_nombre','cantidad', 'precio_unitario']
         read_only_fields = ['pedido'] 
         extra_kwargs = {
             'producto': {'required': True},
             'cantidad': {'required': True},
             'precio_unitario': {'required': True},
         }
+
+    def get_producto_nombre(self, obj):
+        # Devuelve el nombre del producto basado en la relación
+        return obj.producto.nombre  # Esto muestra el nombre del producto
 
 
 class PedidoSerializer(serializers.ModelSerializer):
@@ -44,6 +50,7 @@ class PedidoSerializer(serializers.ModelSerializer):
 
         for item in items_data:
             producto = Producto.objects.get(nombre=item['producto'])
+    
             cantidad = int(item['cantidad'])
             precio_unitario = float(item['precio_unitario'])
 
@@ -63,9 +70,18 @@ class PedidoSerializer(serializers.ModelSerializer):
     # Solo permitimos modificar el estado del pedido
         # estado = validated_data.get('estado', instance.estado)
         # instance.estado = estado
+        estado_anterior = instance.estado
         instance.tipo_entrega = validated_data.get('tipo_entrega', instance.tipo_entrega)
         instance.tipo_pago = validated_data.get('tipo_pago', instance.tipo_pago)
         instance.estado = validated_data.get('estado', instance.estado)
         instance.save()
+        
+        if estado_anterior != instance.estado:
+            Notificacion.objects.create(
+                usuario=instance.usuario,
+                pedido=instance,
+                mensaje=f"📢 Tu pedido #{instance.id} cambió a estado: {instance.estado}"
+            )
+            
         return instance
 
