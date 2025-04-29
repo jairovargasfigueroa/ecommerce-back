@@ -23,12 +23,13 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),   
     path('api/productos/', include('productos.urls')),
+    path('api/categorias/', include('categorias.urls')),
     path('api/carrito/', include('carrito.urls')),  # Rutas para la app carrito
     path('api/usuarios/', include('usuarios.urls')),
     path('api/pedidos/', include('pedidos.urls')),
     path('api/asistente/', include('asistente.urls')),
-    path('api/pagos/', include('pagos.urls')),
-     re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
+    # path('api/pagos/', include('pagos.urls')),
+    #  re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
 
 ]
 

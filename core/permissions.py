@@ -8,8 +8,8 @@ class PermisoPorRol(BasePermission):
 
         rol = getattr(request.user, 'rol', None)
         permisos = {
-            'admin': ['usuarios', 'productos', 'pedidos'],
-            'cliente': ['catalogo', 'carrito', 'pedidos'],
+            'admin': ['usuarios', 'productos', 'pedidos', 'categorias'],
+            'cliente': ['catalogo', 'carrito', 'pedidos', 'categorias'],
             'delivery': ['pedidos']
         }
 

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-x(v=kvumnzt0+t2u8dtnw2^(fl5*^63r)d@vdgqec7(vy&k&t$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.5', 'localhost', '127.0.0.1','10.0.2.2']
+ALLOWED_HOSTS = ['192.168.0.5', 'localhost', '127.0.0.1','10.0.2.2',' 192.168.x.x', '*']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'productos',
+    'categorias',
     'carrito',
     'pedidos',
     'usuarios',
@@ -152,6 +153,7 @@ SIMPLE_JWT = {
 }
 
 REST_FRAMEWORK = {
+    'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,  # ← Puedes ajustar el número por defecto aquí
     'DEFAULT_AUTHENTICATION_CLASSES': (
