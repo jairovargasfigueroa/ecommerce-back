@@ -30,12 +30,7 @@ urlpatterns = [
     path('api/pagos/', include('pagos.urls')),
     path('', include('recomendaciones.urls')),
     path('api/notificaciones/', include('notificaciones.urls')),
-
-    # path('api/recomendaciones/', include('recomendaciones.urls')),
-    re_path(r'^.*$', serve, {
-    'path': 'index.html',
-    'document_root': settings.STATIC_ROOT
-}),
+    re_path(r'^.*$', serve, {'path': 'index.html', 'document_root': settings.STATIC_ROOT}),
 
 
 ]
