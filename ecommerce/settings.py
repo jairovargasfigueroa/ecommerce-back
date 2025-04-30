@@ -13,6 +13,20 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 
 from pathlib import Path
+import os
+from decouple import config
+from decouple import config
+from datetime import timedelta
+
+# MEDIA CONFIG (Azure Blob Storage)
+AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY')
+AZURE_CONTAINER = config('AZURE_CONTAINER')
+
+# DEFAULT_FILE_STORAGE = 'storage_backend.azure_sas_storage.AzureMediaStorage'
+# print(">>> STORAGE CONFIG:", DEFAULT_FILE_STORAGE)
+# from django.core.files.storage import default_storage
+# print(">>> STORAGE CLASS LOADED:", default_storage.__class__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,10 +37,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-x(v=kvumnzt0+t2u8dtnw2^(fl5*^63r)d@vdgqec7(vy&k&t$'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# settings.py
 
-ALLOWED_HOSTS = ['192.168.0.5', 'localhost', '127.0.0.1','10.0.2.2',' 192.168.x.x', '*']
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
+
+# SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True
+DEBUG = False
+
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -49,6 +69,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'core',
     'asistente',
+    'recomendaciones',
+    'notificaciones',
 ]
 
 AUTH_USER_MODEL = 'usuarios.Usuario'
@@ -62,6 +84,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -71,7 +94,7 @@ ROOT_URLCONF = 'ecommerce.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,19 +108,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ecommerce',  # Nombre de la base de datos en PostgreSQL
+#         'USER': 'postgres',  # Nombre del usuario que creaste en PostgreSQL
+#         'PASSWORD': 'admin',  # Contraseña del usuario
+#         'HOST': 'localhost',  # Usualmente localhost
+#         'PORT': '5432',  # Puerto por defecto de PostgreSQL
+#     }
+#
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecommerce',  # Nombre de la base de datos en PostgreSQL
-        'USER': 'postgres',  # Nombre del usuario que creaste en PostgreSQL
-        'PASSWORD': 'admin',  # Contraseña del usuario
-        'HOST': 'localhost',  # Usualmente localhost
-        'PORT': '5432',  # Puerto por defecto de PostgreSQL
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT', default='5433'),
     }
-
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -136,6 +168,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'frontend'),  # Aquí está tu build de Angular (index.html, js, css)
+]
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -143,7 +179,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from datetime import timedelta
 
@@ -154,7 +190,7 @@ SIMPLE_JWT = {
 
 REST_FRAMEWORK = {
     'NON_FIELD_ERRORS_KEY': 'error',
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAU  LT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,  # ← Puedes ajustar el número por defecto aquí
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

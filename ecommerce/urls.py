@@ -18,7 +18,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path,re_path
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
+from waitress import serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),   
@@ -28,8 +28,10 @@ urlpatterns = [
     path('api/usuarios/', include('usuarios.urls')),
     path('api/pedidos/', include('pedidos.urls')),
     path('api/asistente/', include('asistente.urls')),
-    # path('api/pagos/', include('pagos.urls')),
-    #  re_path(r'^.*$', TemplateView.as_view(template_name="index.html")),
+    path('api/pagos/', include('pagos.urls')),
+    path('', include('recomendaciones.urls')),
+    path('api/notificaciones/', include('notificaciones.urls')),
+    re_path(r'^.*$', serve, {'path': 'index.html', 'document_root': settings.STATIC_ROOT}),
 
 ]
 
