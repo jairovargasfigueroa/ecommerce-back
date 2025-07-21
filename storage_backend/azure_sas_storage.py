@@ -18,5 +18,5 @@ class AzureMediaStorage(AzureStorage):
             expiry=datetime.utcnow() + timedelta(hours=1)  # URL válida por 1 hora
         )
         return f"https://{self.account_name}.blob.core.windows.net/{self.azure_container}/{name}?{sas_token}"
-    
+
 azure_storage = AzureMediaStorage()

@@ -14,19 +14,17 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
-from decouple import config
+from decouple import Config, RepositoryEnv
 from datetime import timedelta
+
+# Configurar decouple para usar el archivo .env en la carpeta ecommerce
+env_file = os.path.join(os.path.dirname(__file__), '.env')
+config = Config(RepositoryEnv(env_file))
 
 # MEDIA CONFIG (Azure Blob Storage)
 AZURE_ACCOUNT_NAME = config('AZURE_ACCOUNT_NAME')
 AZURE_ACCOUNT_KEY = config('AZURE_ACCOUNT_KEY')
 AZURE_CONTAINER = config('AZURE_CONTAINER')
-
-# DEFAULT_FILE_STORAGE = 'storage_backend.azure_sas_storage.AzureMediaStorage'
-# print(">>> STORAGE CONFIG:", DEFAULT_FILE_STORAGE)
-# from django.core.files.storage import default_storage
-# print(">>> STORAGE CLASS LOADED:", default_storage.__class__)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,8 +42,7 @@ STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -108,31 +105,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'ecommerce',  # Nombre de la base de datos en PostgreSQL
-#         'USER': 'postgres',  # Nombre del usuario que creaste en PostgreSQL
-#         'PASSWORD': '221046194',  # Contraseña del usuario
-#         'HOST': 'localhost',  # Usualmente localhost
-#         'PORT': '5433',  # Puerto por defecto de PostgreSQL
-#     }
-
-# }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'ecommerce',  # Nombre de tu base de datos
-#         'USER': 'postgres',  # Usuario de Azure
-#         'PASSWORD': 'Abc123**',
-#         'HOST': 'ecommerce-postgres.postgres.database.azure.com',  # Nombre del servidor
-#         'PORT': '5432',
-        
-#     }
-# }
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -143,6 +115,30 @@ DATABASES = {
         'PORT': config('DB_PORT', default='5433'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'ecommerce',  # Nombre de tu base de datos
+#         'USER': 'postgres',  # Usuario de Azure
+#         'PASSWORD': 'Abc123**',
+#         'HOST': 'ecommerce-postgres.postgres.database.azure.com',  # Nombre del servidor
+#         'PORT': '5432',
+
+#     }
+# }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST'),
+#         'PORT': config('DB_PORT', default='5433'),
+#     }
+# }
 
 
 
@@ -185,7 +181,7 @@ USE_TZ = True
 
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, 'frontend'),   # Aquí está el build de Angular
-    
+
 # ]
 
 # STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
