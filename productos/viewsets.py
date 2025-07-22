@@ -6,10 +6,18 @@ from rest_framework.permissions import AllowAny
 from core.permissions import PermisoPorRol
 
 class ProductoViewSet(BaseViewSet):
-    queryset = Producto.objects.all().order_by('-fecha_creacion')  # Obtiene todos los productos
     serializer_class = ProductoSerializer  # Utiliza el serializador definido
     basename = 'productos'
-    
+
+    def get_queryset(self):
+        queryset = Producto.objects.all().order_by('-fecha_creacion')
+
+        categoria = self.request.query_params.get('categoria')
+        if categoria:
+            queryset = queryset.filter(categoria=categoria)
+
+        return queryset
+
     def get_permissions(self):
         if self.action == 'list':
             return [AllowAny()]  # Permitir ver productos sin login

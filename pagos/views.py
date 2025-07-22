@@ -1,13 +1,18 @@
 import stripe
 from django.conf import settings
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+from core.permissions import PermisoPorRol
 from pedidos.models import Pedido
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CrearSesionPagoView(APIView):
+    permission_classes = [PermisoPorRol]
+
     def post(self, request):
         try:
             pedido_id = request.data.get('pedido_id')
@@ -35,3 +40,25 @@ class CrearSesionPagoView(APIView):
             return Response({'error': 'Pedido no encontrado'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+@api_view(['POST'])
+def create_payment_intent(request):
+    try:
+        amount = request.data.get('amount')
+        if not amount:
+            return Response({'error': 'Amount is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        intent = stripe.PaymentIntent.create(
+            amount=int(amount),
+            currency='usd',
+            payment_method_types=['card'],
+        )
+
+        return Response({
+            'client_secret': intent['client_secret']
+        })
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
