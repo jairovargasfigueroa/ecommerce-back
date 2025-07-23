@@ -1,4 +1,4 @@
-
+from rest_framework import pagination
 # from rest_framework.views import APIView
 # from rest_framework.response import Response
 # import pickle
@@ -40,6 +40,7 @@ with open(ruta_reglas, 'rb') as f:
 class RecomendacionAprioriAPIView(APIView):
     authentication_classes = []
     permission_classes = []
+    pagination = None
 
     def post(self, request):
         carrito = request.data.get('productos', [])

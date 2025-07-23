@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'storages',
     'recomendaciones',
     'notificaciones',
+    'sucursales',
 ]
 
 AUTH_USER_MODEL = 'usuarios.Usuario'

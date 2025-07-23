@@ -1,6 +1,10 @@
 from rest_framework import serializers
+
+from notificaciones.fmc import enviar_notificacion_fcm
 from notificaciones.models import Notificacion
 from productos.models import Producto
+from sucursales.models import Sucursal
+from usuarios.models import DireccionEnvio
 from .models import ItemPedido, Pedido
 
 
@@ -24,10 +28,22 @@ class ItemPedidoSerializer(serializers.ModelSerializer):
 class PedidoSerializer(serializers.ModelSerializer):
     items = ItemPedidoSerializer(many=True)
     usuario = serializers.StringRelatedField(read_only=True)
+    direccion_envio_id = serializers.PrimaryKeyRelatedField(
+        queryset=DireccionEnvio.objects.all(), source='direccion_envio', write_only=True, allow_null=True,
+        required=False
+    )
+    sucursal_retiro_id = serializers.PrimaryKeyRelatedField(
+        queryset=Sucursal.objects.all(), source='sucursal_retiro', write_only=True, allow_null=True, required=False
+    )
+    direccion_envio = serializers.StringRelatedField(read_only=True)
+    sucursal_retiro = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Pedido
-        fields = ['id', 'usuario', 'monto_total', 'tipo_pago', 'tipo_entrega', 'estado', 'fecha_pedido', 'items']
+        fields = ['id', 'usuario', 'monto_total', 'tipo_pago', 'tipo_entrega',
+                  'direccion_envio', 'direccion_envio_id',
+                  'sucursal_retiro', 'sucursal_retiro_id', 'estado',
+                  'fecha_pedido', 'items']
         read_only_fields = ['fecha_pedido', 'usuario', 'monto_total']
 
     def create(self, validated_data):
@@ -37,6 +53,8 @@ class PedidoSerializer(serializers.ModelSerializer):
         estado = validated_data.pop('estado')
         tipo_pago = validated_data.pop('tipo_pago')
         tipo_entrega = validated_data.pop('tipo_entrega')
+        direccion_envio = validated_data.pop('direccion_envio', None)
+        sucursal_retiro = validated_data.pop('sucursal_retiro', None)
         monto_total = 0
 
         # Crear pedido vacío
@@ -45,7 +63,9 @@ class PedidoSerializer(serializers.ModelSerializer):
             monto_total=0,
             estado=estado,
             tipo_pago=tipo_pago,
-            tipo_entrega=tipo_entrega
+            tipo_entrega=tipo_entrega,
+            direccion_envio=direccion_envio,
+            sucursal_retiro=sucursal_retiro
         )
 
         for item in items_data:
@@ -75,13 +95,26 @@ class PedidoSerializer(serializers.ModelSerializer):
         instance.tipo_pago = validated_data.get('tipo_pago', instance.tipo_pago)
         instance.estado = validated_data.get('estado', instance.estado)
         instance.save()
-        
+
         if estado_anterior != instance.estado:
+            # Notificar si cambió el estado y el usuario tiene fcm_token
+            if instance.usuario.fcm_token:
+                try:
+                    enviar_notificacion_fcm(
+                        token=instance.usuario.fcm_token,
+                        titulo="📢 Estado de tu pedido actualizado",
+                        mensaje=f"Tu pedido cambió a estado: {instance.estado}"
+                    )
+                except Exception as e:
+                    print(f"Error al enviar notificación FCM: {e}")
+
+            # Crear notificación en BD si la estás usando
+            from notificaciones.models import Notificacion
             Notificacion.objects.create(
                 usuario=instance.usuario,
                 pedido=instance,
                 mensaje=f"📢 Tu pedido #{instance.id} cambió a estado: {instance.estado}"
             )
-            
+
         return instance
 

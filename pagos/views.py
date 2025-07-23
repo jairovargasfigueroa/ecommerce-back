@@ -11,7 +11,7 @@ from pedidos.models import Pedido
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CrearSesionPagoView(APIView):
-    permission_classes = [PermisoPorRol]
+
 
     def post(self, request):
         try:

@@ -1,11 +1,18 @@
 from rest_framework import serializers
-from .models import Usuario
+from .models import Usuario, DireccionEnvio
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+class DireccionEnvioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DireccionEnvio
+        fields = ['id', 'usuario', 'direccion', 'ciudad', 'departamento', 'pais', 'codigo_postal', 'telefono_contacto']
+
 class UsuarioSerializer(serializers.ModelSerializer):
+    direcciones_envio = DireccionEnvioSerializer(many=True, read_only=True)
+
     class Meta:
         model = Usuario
-        fields = ['id', 'username', 'email', 'password', 'rol']
+        fields = ['id', 'username', 'email', 'password', 'rol', 'direcciones_envio']
         extra_kwargs = {
             'password': {'write_only': True},
             'rol': {'required': False}

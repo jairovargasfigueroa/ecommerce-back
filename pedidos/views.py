@@ -1,5 +1,6 @@
 from core.pagination import CustomPagination
 from core.viewsets import BaseViewSet
+from notificaciones.fmc import enviar_notificacion_fcm
 from .models import Pedido
 from .serializers import PedidoSerializer
 from rest_framework.decorators import action
@@ -14,7 +15,18 @@ class PedidoViewSet(BaseViewSet):
 
     def perform_create(self, serializer):
         # Asociar automáticamente el usuario autenticado
-        serializer.save(usuario=self.request.user)
+        pedido = serializer.save(usuario=self.request.user)
+
+        # Solo si el pedido es "pendiente" y el usuario tiene token
+        if pedido.estado == 'pendiente' and pedido.usuario.fcm_token:
+            try:
+                enviar_notificacion_fcm(
+                    token=pedido.usuario.fcm_token,
+                    titulo="Pedido confirmado",
+                    mensaje="Tu pedido fue recibido y está siendo procesado."
+                )
+            except Exception as e:
+                print(f"Error al enviar notificación: {e}")
 
     def get_queryset(self):
         # Filtrar por usuario si no es admin

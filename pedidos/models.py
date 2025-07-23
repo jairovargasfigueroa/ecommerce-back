@@ -1,7 +1,8 @@
 from django.db import models
 
 from productos.models import Producto
-from usuarios.models import Usuario
+from sucursales.models import Sucursal
+from usuarios.models import Usuario, DireccionEnvio
 
 
 class Pedido(models.Model):
@@ -26,7 +27,8 @@ class Pedido(models.Model):
     tipo_pago = models.CharField(max_length=10, choices=TIPOS_PAGO,default='efectivo')
     tipo_entrega = models.CharField(max_length=10, choices=TIPOS_ENTREGA,default='tienda')
     fecha_pedido = models.DateTimeField(auto_now_add=True)
-    
+    direccion_envio = models.ForeignKey(DireccionEnvio, null=True, blank=True, on_delete=models.SET_NULL)
+    sucursal_retiro = models.ForeignKey(Sucursal, null=True, blank=True, on_delete=models.SET_NULL)
     
     def __str__(self):
         return f"Pedido {self.id} - {self.estado}"

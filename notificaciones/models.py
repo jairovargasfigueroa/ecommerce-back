@@ -12,4 +12,3 @@ class Notificacion(models.Model):
 
     def __str__(self):
         return f"Notif {self.usuario.username} - {self.mensaje[:30]}"
-
